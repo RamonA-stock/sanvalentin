@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentín</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://www.transparenttextures.com/patterns/romantic.png'), #ffdde1;
+            flex-direction: column;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+        .container {
+            position: relative;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        .card {
+            width: 100%;
+            height: 180px;
+            background: #ff4d6d;
+            position: relative;
+            cursor: pointer;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.5s, background 0.5s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            text-align: center;
+            backface-visibility: hidden;
+        }
+        .card.open {
+            transform: rotateY(180deg);
+            background: white;
+            color: #ff4d6d;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .card.open span {
+            transform: rotateY(180deg);
+            display: inline-block;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+        .btn {
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 200px;
+        }
+        .yes {
+            background-color: #ff4d6d;
+            color: white;
+        }
+        .yes:hover {
+            transform: scale(1.5);
+        }
+        .no {
+            background-color: #ddd;
+            color: black;
+        }
+        /* Fuegos artificiales */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: yellow;
+            border-radius: 50%;
+            animation: explode 1.5s forwards;
+        }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-100px, -100px) scale(3); opacity: 0; }
+        }
+        .teamo {
+            font-size: 50px;
+            color: #ff4d6d;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: 999;
+        }
+        .teamo.show {
+            opacity: 1;
+        }
+        .warning {
+            font-size: 18px;
+            color: #ff4d6d;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .warning.show {
+            opacity: 1;
+        }
+        
+        /* Ajustes para pantallas pequeñas */
+        @media (max-width: 600px) {
+            .card {
+                font-size: 18px;
+                height: 150px;
+            }
+            .teamo {
+                font-size: 35px;
+            }
+            .btn {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" onclick="openCard()"><span>💌 Toca para abrir</span></div>
+        <div class="buttons" id="buttons" style="display: none;">
+            <button class="btn yes" onclick="accept()">Sí 💖</button>
+            <button class="btn no" id="noBtn" onclick="showWarning()">No 💔</button>
+        </div>
+        <div class="teamo" id="teamo">Te amo ojitosss 💖</div>
+        <div class="fireworks" id="fireworks"></div>
+        <div class="warning" id="warning">¿Por qué le picas a ese nono mijita? ¡Picale al otro!</div>
+    </div>
+
+    <script>
+        function openCard() {
+            const card = document.querySelector('.card');
+            card.classList.toggle('open');
+            card.innerHTML = card.classList.contains('open') 
+                ? "<span style='display: inline-block; transform: rotateY(180deg);'>❤️ ¿Quieres ser mi San Valentín? ❤️</span>" 
+                : "<span>💌 Toca para abrir</span>";
+            
+            if (card.classList.contains('open')) {
+                document.getElementById('buttons').style.display = 'flex';
+            }
+        }
+
+        function showWarning() {
+            const warning = document.getElementById('warning');
+            warning.classList.add('show');
+            setTimeout(() => {
+                warning.classList.remove('show');
+            }, 3000); // El mensaje desaparece después de 3 segundos
+        }
+
+        function accept() {
+            // Mostrar fuegos artificiales
+            showFireworks();
+
+            // Mostrar solo el mensaje "Te amo ojitosss"
+            const teamo = document.getElementById('teamo');
+            teamo.classList.add('show');
+        }
+
+        function showFireworks() {
+            const fireworks = document.getElementById('fireworks');
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.left = `${Math.random() * window.innerWidth}px`;
+                firework.style.top = `${Math.random() * window.innerHeight}px`;
+                firework.style.animationDuration = `${Math.random() * 1.5 + 1}s`;
+                firework.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`; // Colores aleatorios
+                fireworks.appendChild(firework);
+                setTimeout(() => firework.remove(), 1500); // Eliminar el fuego después de la animación
+            }
+        }
+    </script>
+</body>
+</html>
